@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas com Hash</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gerador de Senhas com Hash</h1>
+        <div id="form">
+            <form id="hashForm">
+                <label for="password">Digite a senha:</label>
+                <input type="text" id="password" name="password" required>
+                <button type="submit">Gerar Hash</button>
+            </form>
+        </div>
+        <div id="results">
+            <h2>Resultado:</h2>
+            <p id="passwordResult"></p> <!-- Exibe a senha -->
+            <p>MD5: <span id="md5Hash"></span></p>
+            <p>SHA1: <span id="sha1Hash"></span></p>
+            <button id="copyMd5Button" class="copy-button">Copiar MD5</button>
+            <button id="copySha1Button" class="copy-button">Copiar SHA1</button>
+            <button id="clearButton" class="clear-button">Limpar</button> <!-- Botão Limpar -->
+        </div>
+    </div>
+    
+    <script src="js/scripts.js"></script>
+
+</body>
+</html>

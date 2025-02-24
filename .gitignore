@@ -1,0 +1,13 @@
+# Ignorar arquivos e diretórios
+utils/
+testes/
+node_modules/
+dist/
+build/
+coverage/
+.vscode/
+.idea/
+*.iml
+*.log
+*.txt
+*.csv   
