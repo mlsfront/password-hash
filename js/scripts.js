@@ -3,9 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('password');
     const md5Output = document.getElementById('md5Hash');
     const sha1Output = document.getElementById('sha1Hash');
+    const bcryptOutput = document.getElementById('bcryptHash');
     const passwordResult = document.getElementById('passwordResult');
     const copyMd5Button = document.getElementById('copyMd5Button');
     const copySha1Button = document.getElementById('copySha1Button');
+    const copyBcryptButton = document.getElementById('copyBcryptButton');
     const clearButton = document.getElementById('clearButton');
 
     form.addEventListener('submit', function(event) {
@@ -17,14 +19,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Gera os hashes diretamente no JavaScript
-        const md5Hash = CryptoJS.MD5(password).toString(CryptoJS.enc.Hex);
-        const sha1Hash = CryptoJS.SHA1(password).toString(CryptoJS.enc.Hex);
+        fetch('src/php/hash_generator.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password: password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
-        // Exibe os resultados
-        passwordResult.textContent = `Senha: ${password}`;
-        md5Output.textContent = md5Hash;
-        sha1Output.textContent = sha1Hash;
+            // Exibe a senha no resultado
+            passwordResult.textContent = `Senha: ${data.password}`;
+            md5Output.textContent = data.md5;
+            sha1Output.textContent = data.sha1;
+            bcryptOutput.textContent = data.bcrypt;
+        })
+        .catch(error => {
+            console.error('Erro ao gerar hashes:', error);
+        });
     });
 
     copyMd5Button.addEventListener('click', function() {
@@ -44,6 +61,16 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(err => {
                 console.error('Erro ao copiar o hash SHA1:', err);
+            });
+    });
+
+    copyBcryptButton.addEventListener('click', function() {
+        navigator.clipboard.writeText(bcryptOutput.textContent)
+            .then(() => {
+                alert('Bcrypt hash copiado para a área de transferência!');
+            })
+            .catch(err => {
+                console.error('Erro ao copiar o hash Bcrypt:', err);
             });
     });
 
