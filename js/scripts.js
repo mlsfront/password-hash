@@ -19,30 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch('src/php/hash_generator.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password: password })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
+        // Gera os hashes direto no navegador
+        const md5Hash = CryptoJS.MD5(password).toString();
+        const sha1Hash = CryptoJS.SHA1(password).toString();
+        const bcryptHash = dcodeIO.bcrypt.hashSync(password, 10);
 
-            // Exibe a senha no resultado
-            passwordResult.textContent = `Senha: ${data.password}`;
-            md5Output.textContent = data.md5;
-            sha1Output.textContent = data.sha1;
-            bcryptOutput.textContent = data.bcrypt;
-        })
-        .catch(error => {
-            console.error('Erro ao gerar hashes:', error);
-        });
+        // Exibe os resultados
+        passwordResult.textContent = `Senha: ${password}`;
+        md5Output.textContent = md5Hash;
+        sha1Output.textContent = sha1Hash;
+        bcryptOutput.textContent = bcryptHash;
     });
+
 
     copyMd5Button.addEventListener('click', function() {
         navigator.clipboard.writeText(md5Output.textContent)
