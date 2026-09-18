@@ -1,84 +1,65 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('hashForm');
     const passwordInput = document.getElementById('password');
-    const md5Output = document.getElementById('md5Hash');
-    const sha1Output = document.getElementById('sha1Hash');
-    const bcryptOutput = document.getElementById('bcryptHash');
-    const passwordResult = document.getElementById('passwordResult');
-    const copyMd5Button = document.getElementById('copyMd5Button');
-    const copySha1Button = document.getElementById('copySha1Button');
-    const copyBcryptButton = document.getElementById('copyBcryptButton');
-    const clearButton = document.getElementById('clearButton');
+    const status = document.getElementById('status');
+    const outputs = {
+        md5: document.getElementById('md5Hash'),
+        sha1: document.getElementById('sha1Hash'),
+        bcrypt: document.getElementById('bcryptHash')
+    };
+    const copyButtons = {
+        md5: document.getElementById('copyMd5Button'),
+        sha1: document.getElementById('copySha1Button'),
+        bcrypt: document.getElementById('copyBcryptButton')
+    };
 
-    form.addEventListener('submit', function(event) {
+    function setStatus(message, type) {
+        status.textContent = message;
+        status.className = `status ${type || ''}`;
+    }
+
+    form.addEventListener('submit', async function(event) {
         event.preventDefault();
-        const password = passwordInput.value.trim();
-
-        if (password === '') {
-            alert('Por favor, insira uma senha.');
+        const password = passwordInput.value;
+        if (password.trim() === '') {
+            setStatus('Digite uma senha para continuar.', 'error');
+            passwordInput.focus();
             return;
         }
+        setStatus('Gerando hashes...');
+        try {
+            const response = await fetch('php/hash_generator.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: password }) });
+            if (!response.ok) throw new Error('Resposta invalida do servidor.');
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            Object.keys(outputs).forEach(function(name) {
+                outputs[name].textContent = data[name];
+                copyButtons[name].disabled = false;
+            });
+            setStatus('Hashes gerados com sucesso.', 'success');
+        } catch (error) {
+            setStatus(error.message || 'Nao foi possivel gerar os hashes.', 'error');
+        }
+    });
 
-        fetch('php/hash_generator.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password: password })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-                return;
+    Object.keys(copyButtons).forEach(function(name) {
+        copyButtons[name].addEventListener('click', async function() {
+            try {
+                await navigator.clipboard.writeText(outputs[name].textContent);
+                setStatus(`${name.toUpperCase()} copiado para a area de transferencia.`, 'success');
+            } catch (error) {
+                setStatus('Nao foi possivel copiar este hash.', 'error');
             }
-
-            // Exibe a senha no resultado
-            passwordResult.textContent = `Senha: ${data.password}`;
-            md5Output.textContent = data.md5;
-            sha1Output.textContent = data.sha1;
-            bcryptOutput.textContent = data.bcrypt;
-        })
-        .catch(error => {
-            console.error('Erro ao gerar hashes:', error);
         });
     });
 
-    copyMd5Button.addEventListener('click', function() {
-        navigator.clipboard.writeText(md5Output.textContent)
-            .then(() => {
-                alert('MD5 hash copiado para a área de transferência!');
-            })
-            .catch(err => {
-                console.error('Erro ao copiar o hash MD5:', err);
-            });
-    });
-
-    copySha1Button.addEventListener('click', function() {
-        navigator.clipboard.writeText(sha1Output.textContent)
-            .then(() => {
-                alert('SHA1 hash copiado para a área de transferência!');
-            })
-            .catch(err => {
-                console.error('Erro ao copiar o hash SHA1:', err);
-            });
-    });
-
-    copyBcryptButton.addEventListener('click', function() {
-        navigator.clipboard.writeText(bcryptOutput.textContent)
-            .then(() => {
-                alert('Bcrypt hash copiado para a área de transferência!');
-            })
-            .catch(err => {
-                console.error('Erro ao copiar o hash Bcrypt:', err);
-            });
-    });
-
-    // Função para limpar o formulário e os resultados
-    clearButton.addEventListener('click', function() {
+    document.getElementById('clearButton').addEventListener('click', function() {
         passwordInput.value = '';
-        passwordResult.textContent = '';
-        md5Output.textContent = '';
-        sha1Output.textContent = '';
+        Object.keys(outputs).forEach(function(name) {
+            outputs[name].textContent = '-';
+            copyButtons[name].disabled = true;
+        });
+        setStatus('Nenhum hash gerado ainda.');
+        passwordInput.focus();
     });
 });

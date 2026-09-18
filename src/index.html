@@ -3,30 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Senhas com Hash</title>
+    <title>HashLab | Gerador de hashes</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Gerador de Senhas com Hash</h1>
-        <div id="form">
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">FERRAMENTA LOCAL</p>
+            <h1>HashLab</h1>
+            <p class="intro">Gere hashes usando o endpoint PHP configurado para este ambiente.</p>
+        </header>
+        <section class="panel" aria-labelledby="form-title">
+            <h2 id="form-title">Entrada</h2>
             <form id="hashForm">
-                <label for="password">Digite a senha:</label>
-                <input type="text" id="password" name="password" required>
-                <button type="submit">Gerar Hash</button>
+                <label for="password">Senha para processar</label>
+                <input type="password" id="password" name="password" autocomplete="off" required>
+                <p class="hint">A senha e enviada ao endpoint PHP e nao e devolvida nos resultados.</p>
+                <button type="submit" class="primary-button">Gerar hashes</button>
             </form>
-        </div>
-        <div id="results">
-            <h2>Resultado:</h2>
-            <p id="passwordResult"></p> <!-- Exibe a senha -->
-            <p>MD5: <span id="md5Hash"></span></p>
-            <p>SHA1: <span id="sha1Hash"></span></p>
-            <p>Bcrypt: <span id="bcryptHash"></span></p>
-            <button id="copyMd5Button" class="copy-button">Copiar MD5</button>
-            <button id="copySha1Button" class="copy-button">Copiar SHA1</button>
-            <button id="copyBcryptButton" class="copy-button">Copiar Bcrypt</button>
-            <button id="clearButton" class="clear-button">Limpar</button> <!-- Botão Limpar -->
-        </div>
+        </section>
+        <section id="results" class="panel results" aria-labelledby="results-title">
+            <div class="section-heading">
+                <div><p class="eyebrow">SAIDA</p><h2 id="results-title">Hashes gerados</h2></div>
+                <button id="clearButton" class="clear-button" type="button">Limpar</button>
+            </div>
+            <p id="status" class="status" role="status" aria-live="polite">Nenhum hash gerado ainda.</p>
+            <div class="hash-list">
+                <div class="hash-row"><div><span class="hash-name">MD5</span><code id="md5Hash">-</code></div><button id="copyMd5Button" class="copy-button" type="button" disabled>Copiar</button></div>
+                <div class="hash-row"><div><span class="hash-name">SHA-1</span><code id="sha1Hash">-</code></div><button id="copySha1Button" class="copy-button" type="button" disabled>Copiar</button></div>
+                <div class="hash-row"><div><span class="hash-name">bcrypt</span><code id="bcryptHash">-</code></div><button id="copyBcryptButton" class="copy-button" type="button" disabled>Copiar</button></div>
+            </div>
+        </section>
+        <p class="warning">MD5 e SHA-1 sao mantidos apenas para compatibilidade. Para senhas reais, prefira bcrypt ou Argon2.</p>
+    </main>
     </div>
     
     <script src="js/scripts.js"></script>
