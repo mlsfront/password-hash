@@ -1,66 +1,68 @@
-# Password Hash Generator
+# HashLab
 
-Este projeto é uma aplicação web que permite aos usuários gerar senhas com hashes MD5 e SHA1. A aplicação é construída utilizando HTML, CSS, JavaScript e PHP.
+Ferramenta web para estudar e comparar hashes de senha em um ambiente de desenvolvimento. O projeto mostra MD5, SHA-1 e bcrypt e permite copiar cada resultado.
 
-## Estrutura do Projeto para Rodar com PHP
+> **Atenção:** MD5 e SHA-1 são algoritmos legados e não devem ser usados para armazenar senhas. Para aplicações reais, use `password_hash()` com bcrypt ou Argon2id e valide com `password_verify()`.
 
-```
-password-hash-generator
-├── src
-│   ├── css
-│   │   └── styles.css        # Estilos CSS para a aplicação
-│   ├── js
-│   │   └── scripts.js        # Lógica JavaScript para geração de hashes e validação
-│   ├── php
-│   │   └── hash_generator.php # Lógica PHP para gerar hashes a partir das senhas
-│   └── index.html            # Página principal da aplicação
-└── README.md                 # Documentação do projeto
-```
+## Versões disponíveis
 
-## Como Usar com PHP
+O repositório contém duas versões com a mesma interface:
 
-1. **Configuração do Ambiente**: Certifique-se de que você tem um servidor PHP em funcionamento. Você pode usar o XAMPP, WAMP ou qualquer outro servidor que suporte PHP.
+- **Raiz (`index.html`)**: gera os três hashes no navegador. A senha não é enviada para um servidor. Depende de CryptoJS e bcryptjs carregados via CDN.
+- **`src/`**: gera os hashes através de `src/php/hash_generator.php`. A senha é enviada ao endpoint PHP, mas não é devolvida na resposta.
 
-2. **Instalação**: Baixe ou clone este repositório em seu ambiente local.
+## Como executar
 
-3. **Acessando a Aplicação**: Navegue até o diretório do projeto e abra o arquivo `index.html` em seu navegador.
+### Versão local
 
-4. **Gerando Hashes**:
-   - Insira uma senha no campo fornecido.
-   - Clique no botão para gerar o hash.
-   - O hash MD5 e SHA1 será exibido na tela.
-   - Você pode copiar os hashes gerados usando o botão de copiar.
+Abra `index.html` no navegador ou sirva a pasta raiz com um servidor HTTP local:
 
-## Estrutura do Projeto Usando Biblioteca CryptJS
-
-```
-password-hash-generator
-├── css
-│   └── styles.css        # Estilos CSS para a aplicação
-│   js
-│   └── scripts.js        # Lógica JavaScript para geração de hashes e validação
-│   index.html            # Página principal da aplicação
-└── README.md                 # Documentação do projeto
+```bash
+php -S localhost:8000
 ```
 
-## Como Usar sem o PHP
+Acesse <http://localhost:8000>.
 
-1. **Instalação**: Baixe ou clone este repositório em seu ambiente local.
+### Versão PHP
 
-2. **Acessando a Aplicação**: Navegue até o diretório do projeto e abra o arquivo `index.html` em seu navegador.
+É necessário ter PHP instalado. Na raiz do projeto, execute:
 
-3. **Gerando Hashes**:
-   - Insira uma senha no campo fornecido.
-   - Clique no botão para gerar o hash.
-   - O hash MD5 e SHA1 será exibido na tela.
-   - Você pode copiar os hashes gerados usando o botão de copiar.
-   
+```bash
+php -S localhost:8000 -t src
+```
+
+Acesse <http://localhost:8000>.
+
 ## Funcionalidades
 
-- Geração de hashes MD5 e SHA1 a partir de senhas fornecidas pelo usuário.
-- Validação dos dados de entrada para garantir que a senha não esteja vazia.
-- Opção para copiar os hashes gerados para a área de transferência.
+- Geração de MD5, SHA-1 e bcrypt.
+- Preservação do valor digitado, incluindo espaços significativos.
+- Cópia individual dos hashes para a área de transferência.
+- Limpeza completa dos resultados e da senha digitada.
+- Mensagens de estado sem uso de `alert()`.
+- Layout responsivo e suporte a navegação por teclado.
 
-## Contribuições
+## Limitações
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests para melhorias e correções.
+- A versão local depende de serviços CDN para carregar as bibliotecas criptográficas.
+- A API PHP não deve ser publicada sem HTTPS, controle de acesso e limites de requisição.
+- Este projeto é educacional e não substitui o fluxo de autenticação de uma aplicação real.
+
+## Estrutura
+
+```text
+.
+├── index.html
+├── css/styles.css
+├── js/crypt-js.js
+├── js/scripts.js
+└── src/
+    ├── index.html
+    ├── css/styles.css
+    ├── js/scripts.js
+    └── php/hash_generator.php
+```
+
+## Contribuição
+
+Issues e pull requests são bem-vindos. Ao propor mudanças, inclua o comportamento esperado e uma forma de reproduzir o problema.
